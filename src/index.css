@@ -1,1 +1,125 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html.dark,
+html.dark body {
+  background-color: #020617;
+  color: #e2e8f0;
+  color-scheme: dark;
+}
+
+.dark .bg-white {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+.dark .hover\:bg-slate-50:hover {
+  background-color: #1e293b !important;
+}
+
+.dark .hover\:bg-white:hover {
+  background-color: #1e293b !important;
+}
+
+.dark .hover\:text-slate-900:hover {
+  color: #f8fafc !important;
+}
+
+.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+.dark .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.dark .fill-slate-600 {
+  fill: #cbd5e1 !important;
+}
+
+.dark .fill-slate-700 {
+  fill: #e2e8f0 !important;
+}
+
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-200\/80 {
+  border-color: #334155 !important;
+}
+
+.dark .border-slate-300 {
+  border-color: #475569 !important;
+}
+
+.dark .bg-blue-50 {
+  background-color: rgb(30 58 138 / 0.3) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgb(6 78 59 / 0.3) !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgb(120 53 15 / 0.3) !important;
+}
+
+.dark .bg-rose-50,
+.dark .bg-red-50 {
+  background-color: rgb(136 19 55 / 0.25) !important;
+}
+
+.dark .bg-green-50 {
+  background-color: rgb(6 78 59 / 0.3) !important;
+}
+
+.dark .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+.dark .text-emerald-700,
+.dark .text-green-700 {
+  color: #6ee7b7 !important;
+}
+
+.dark .text-amber-700 {
+  color: #fcd34d !important;
+}
+
+.dark .text-rose-700,
+.dark .text-red-700 {
+  color: #fda4af !important;
+}
+
+.dark .border-red-200,
+.dark .border-green-200 {
+  border-color: #475569 !important;
+}
