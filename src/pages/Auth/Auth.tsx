@@ -4,6 +4,7 @@ import appLogo from "../../assets/logo.png"
 import ThemeToggle from "../../components/ThemeToggle/ThemeToggle"
 import { authService } from "./Auth.service"
 import type { AuthResponse } from "../../types/auth.types"
+import { useToast } from "../../contexts/useToast"
 
 interface AuthProps {
   onAuthenticated: (response: AuthResponse) => void
@@ -24,6 +25,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export default function Auth({ onAuthenticated }: AuthProps) {
+  const { showToast } = useToast()
   const [mode, setMode] = useState<AuthMode>("login")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -38,12 +40,16 @@ export default function Auth({ onAuthenticated }: AuthProps) {
     setSuccess("")
 
     if (!username.trim() || !password) {
-      setError("Please enter your username and password.")
+      const message = "Please enter your username and password."
+      setError(message)
+      showToast({ title: "Sign-in details required", message, variant: "warning" })
       return
     }
 
     if (mode === "signup" && password !== confirmPassword) {
-      setError("Passwords do not match.")
+      const message = "Passwords do not match."
+      setError(message)
+      showToast({ title: "Passwords do not match", message, variant: "warning" })
       return
     }
 
@@ -55,6 +61,7 @@ export default function Auth({ onAuthenticated }: AuthProps) {
           username: username.trim(),
           password,
         })
+        showToast({ title: "Signed in", message: "Welcome back.", variant: "success" })
         onAuthenticated(response)
       } else {
         await authService.register({
@@ -62,12 +69,23 @@ export default function Auth({ onAuthenticated }: AuthProps) {
           password,
         })
         setSuccess("Account created! Please sign in to continue.")
+        showToast({
+          title: "Account created",
+          message: "Your account is ready. Please sign in to continue.",
+          variant: "success",
+        })
         setMode("login")
         setPassword("")
         setConfirmPassword("")
       }
     } catch (err: unknown) {
-      setError(getErrorMessage(err))
+      const message = getErrorMessage(err)
+      setError(message)
+      showToast({
+        title: mode === "login" ? "Sign-in failed" : "Account creation failed",
+        message,
+        variant: "error",
+      })
     } finally {
       setLoading(false)
     }

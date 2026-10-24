@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, type ReactNode } from "react"
+import { Link, useLocation } from "react-router"
 import appLogo from "../../assets/logo.png"
 import ThemeToggle from "../ThemeToggle/ThemeToggle"
 
@@ -56,6 +57,7 @@ export const erpSections: NavSection[] = [
     items: [
       {
         label: "Products",
+        href: "/products",
         icon: (
           <>
             <path d="M16.5 9.4 7.55 4.24" />
@@ -77,6 +79,7 @@ export const erpSections: NavSection[] = [
       },
       {
         label: "Suppliers",
+        href: "/suppliers",
         icon: (
          <>
             <path d="m11 17 2 2a1 1 0 1 0 3-3" />
@@ -176,9 +179,9 @@ export default function Sidebar({
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const sidebarRef = useRef<HTMLElement>(null)
   const profileMenuRef = useRef<HTMLDivElement>(null)
+  const { pathname: currentPath } = useLocation()
 
   const isExpanded = isPinned || isHovering
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : ""
 
   // Close mobile menu on window resize
   useEffect(() => {
@@ -238,8 +241,8 @@ export default function Sidebar({
       `}
     >
       {/* Header / Brand */}
-      <div className="flex h-18 shrink-0 items-center border-b border-slate-100 px-4">
-        <a href="/dashboard" className="flex items-center gap-3 min-w-0">
+      <div className="flex h-22 shrink-0 items-center border-b border-slate-100 px-4">
+        <Link to="/dashboard" className="flex items-center gap-3 min-w-0" onClick={() => setIsMobileOpen(false)}>
           <img
             src={appLogo}
             alt=""
@@ -254,7 +257,7 @@ export default function Sidebar({
             <span className="text-sm font-bold text-slate-900 truncate">{brandName}</span>
             <span className="text-[11px] text-slate-500 font-medium">Enterprise Workspace</span>
           </div>
-        </a>
+        </Link>
       </div>
 
       {/* Navigation Area */}
@@ -281,8 +284,12 @@ export default function Sidebar({
                       onMouseEnter={() => !isExpanded && hasChildren && setHoveredItem(item.label)}
                       onMouseLeave={() => setHoveredItem(null)}
                     >
-                      <a
-                        href={hasChildren ? undefined : item.href}
+                      <Link
+                        to={hasChildren ? currentPath : item.href ?? currentPath}
+                        onClick={(event) => {
+                          if (hasChildren) event.preventDefault()
+                          setIsMobileOpen(false)
+                        }}
                         className={`
                           group flex items-center rounded-lg text-sm font-medium transition-all duration-200 relative
                           ${isExpanded ? "px-3 py-2.5" : "justify-center p-2.5"}
@@ -319,15 +326,16 @@ export default function Sidebar({
                             <path d="m9 18 6-6-6-6" />
                           </Icon>
                         )}
-                      </a>
+                      </Link>
 
                       {/* Expanded Submenu (Inline Dropdown) */}
                       {hasChildren && isExpanded && parentActive && (
                         <ul className="mt-1 ml-4 space-y-1 border-l border-slate-200 pl-3">
                           {item.children!.map((child) => (
                             <li key={child.href}>
-                              <a
-                                href={child.href}
+                              <Link
+                                to={child.href}
+                                onClick={() => setIsMobileOpen(false)}
                                 className={`flex items-center justify-between px-3 py-1.5 text-[13px] rounded-md transition-colors ${
                                   isActive(child.href)
                                     ? "text-blue-700 font-semibold"
@@ -340,7 +348,7 @@ export default function Sidebar({
                                     {child.badge}
                                   </span>
                                 )}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -356,8 +364,9 @@ export default function Sidebar({
                         <ul className="space-y-0.5">
                           {item.children!.map((child) => (
                             <li key={child.href}>
-                              <a
-                                href={child.href}
+                              <Link
+                                to={child.href}
+                                onClick={() => setIsMobileOpen(false)}
                                 className={`flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors ${
                                   isActive(child.href)
                                     ? "bg-blue-50 text-blue-700 font-semibold"
@@ -370,7 +379,7 @@ export default function Sidebar({
                                     {child.badge}
                                   </span>
                                 )}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -433,7 +442,15 @@ export default function Sidebar({
           from { opacity: 0; transform: translateX(-8px); }
           to { opacity: 1; transform: translateX(0); }
         }
+        @keyframes route-enter {
+          from { opacity: 0; transform: translateY(5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         .animate-flyout { animation: flyout 0.2s ease-out forwards; }
+        .route-enter { animation: route-enter 0.18s ease-out both; }
+        @media (prefers-reduced-motion: reduce) {
+          .route-enter { animation: none; }
+        }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
@@ -518,6 +535,7 @@ export default function Sidebar({
                   role="menu"
                   className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900"
                 >
+                  {/* User Info Header */}
                   <div className="border-b border-slate-100 px-4 py-3 dark:border-slate-800">
                     <p className="text-sm font-semibold text-slate-900 dark:text-white">
                       Admin User
@@ -526,6 +544,24 @@ export default function Sidebar({
                       Account profile
                     </p>
                   </div>
+
+                  {/* View Profile Button */}
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setIsProfileMenuOpen(false)
+                    }}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-950/40 dark:hover:text-blue-300 dark:focus:bg-blue-950/40"
+                  >
+                    <Icon className="h-4 w-4">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </Icon>
+                    View Profile
+                  </button>
+
+                  {/* Sign Out Button */}
                   <button
                     type="button"
                     role="menuitem"
@@ -549,7 +585,7 @@ export default function Sidebar({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="route-enter flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   )

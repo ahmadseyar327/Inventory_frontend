@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState, type ReactNode } from "react"
 import Sidebar from "../../components/Sidebar/Sidebar"
+import { useToast } from "../../contexts/useToast"
 import { dashboardService, type DashboardSummary } from "./Dashboard.service"
 
 interface DashboardProps {
@@ -250,6 +251,7 @@ function DonutChart({ healthy, low }: { healthy: number; low: number }) {
 }
 
 export default function Dashboard({ onLogout }: DashboardProps) {
+  const { showToast } = useToast()
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -271,7 +273,9 @@ export default function Dashboard({ onLogout }: DashboardProps) {
       })
       .catch((requestError: unknown) => {
         if (isMounted) {
-          setError(getErrorMessage(requestError))
+          const message = getErrorMessage(requestError)
+          setError(message)
+          showToast({ title: "Dashboard could not be loaded", message, variant: "error" })
         }
       })
       .finally(() => {
@@ -283,7 +287,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [showToast])
 
   async function handleRetry() {
     setLoading(true)
@@ -292,8 +296,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     try {
       const data = await dashboardService.getSummary()
       setSummary(data)
+      showToast({ title: "Dashboard refreshed", variant: "success" })
     } catch (requestError: unknown) {
-      setError(getErrorMessage(requestError))
+      const message = getErrorMessage(requestError)
+      setError(message)
+      showToast({ title: "Dashboard refresh failed", message, variant: "error" })
     } finally {
       setLoading(false)
     }

@@ -6,9 +6,13 @@ import Dashboard from "../pages/Dashboard/Dashboard"
 import Customers from "../pages/Customers/Customer"
 
 import { clearAuthToken, getAuthToken } from "../services/api"
+import ProductsPage from "../pages/Products/Product"
+import { useToast } from "../contexts/useToast"
+import SuppliersPage from "../pages/Suppliers/Suppier"
 
 function AppRoutes() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const isAuthenticated = Boolean(getAuthToken())
 
   return (
@@ -45,6 +49,7 @@ function AppRoutes() {
             <Dashboard
               onLogout={() => {
                 clearAuthToken()
+                showToast({ title: "Signed out", message: "You have been securely signed out.", variant: "success" })
                 navigate("/login", { replace: true })
               }}
             />
@@ -59,6 +64,28 @@ function AppRoutes() {
         element={
           isAuthenticated ? (
             <Customers />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/products"
+        element={
+          isAuthenticated ? (
+            <ProductsPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/suppliers"
+        element={
+          isAuthenticated ? (
+            <SuppliersPage/>
           ) : (
             <Navigate to="/login" replace />
           )
