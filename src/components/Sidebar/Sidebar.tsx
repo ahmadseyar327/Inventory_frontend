@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, type ReactNode } from "react"
-import { Link, useLocation } from "react-router"
+import { Link, Navigate, useLocation, useNavigate } from "react-router"
 import appLogo from "../../assets/logo.png"
 import ThemeToggle from "../ThemeToggle/ThemeToggle"
 
@@ -92,6 +92,7 @@ export const erpSections: NavSection[] = [
       },
       {
         label: "Sales",
+        href: "/sale",
         icon: (
           <>
             <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
@@ -103,6 +104,7 @@ export const erpSections: NavSection[] = [
       },
       {
         label: "Purchases",
+        href: "/purchase",
         icon: (
           <>
             <circle cx="8" cy="21" r="1" />
@@ -133,6 +135,16 @@ export const erpSections: NavSection[] = [
           <>
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
             <circle cx="12" cy="12" r="3" />
+          </>
+        ),
+      },
+      {
+        label: "Users",
+        href: "/users",
+        icon: (
+          <>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="10" cy="7" r="4" />
           </>
         ),
       },
@@ -172,6 +184,7 @@ export default function Sidebar({
   onLogout,
   children,
 }: ERPSidebarProps) {
+  const navigate = useNavigate();
   const [isPinned, setIsPinned] = useState(true)
   const [isHovering, setIsHovering] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -551,6 +564,7 @@ export default function Sidebar({
                     role="menuitem"
                     onClick={() => {
                       setIsProfileMenuOpen(false)
+                      navigate('/profile')
                     }}
                     className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-950/40 dark:hover:text-blue-300 dark:focus:bg-blue-950/40"
                   >

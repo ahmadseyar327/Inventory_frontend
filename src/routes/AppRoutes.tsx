@@ -9,6 +9,16 @@ import { clearAuthToken, getAuthToken } from "../services/api"
 import ProductsPage from "../pages/Products/Product"
 import { useToast } from "../contexts/useToast"
 import SuppliersPage from "../pages/Suppliers/Suppier"
+import ProfilePage from "../pages/Profile/Profile"
+import UsersPage from "../pages/Users/Users"
+import PurchasesPage from "../pages/Purchases/Purchase"
+import PurchaseDetailPage from "../pages/Purchases/PurchaseDetail"
+import SalesPage from "../pages/Sales/Sale"
+import SaleDetailPage from "../pages/Sales/SaleDetail"
+import { Settings } from "lucide-react"
+import SettingsPage from "../pages/Settings/Settings"
+import Product from "../pages/Products/Product"
+import ProductTypesPage from "../pages/ProductTypes/ProductTypes"
 
 function AppRoutes() {
   const navigate = useNavigate()
@@ -90,6 +100,94 @@ function AppRoutes() {
             <Navigate to="/login" replace />
           )
         }
+      /> 
+
+      <Route
+        path="/users"
+        element={
+          isAuthenticated ? (
+            <UsersPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/purchase"
+        element={
+          isAuthenticated ? (
+            <PurchasesPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/sale"
+        element={
+          isAuthenticated ? (
+            <SalesPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/product-types"
+        element={
+          isAuthenticated ? (
+            <ProductTypesPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          isAuthenticated ? (
+            <SettingsPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/sale/:id"
+        element={
+          isAuthenticated ? (
+            <SaleDetailPage />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/purchases/:id"
+        element={
+          isAuthenticated ? (
+            <PurchaseDetailPage />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? (
+            <ProfilePage/>
+          ) : (
+            <Navigate to="/login" replace />
+              )
+            }
       />
 
       <Route
