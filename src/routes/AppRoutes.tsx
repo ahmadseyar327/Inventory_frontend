@@ -19,6 +19,8 @@ import { Settings } from "lucide-react"
 import SettingsPage from "../pages/Settings/Settings"
 import Product from "../pages/Products/Product"
 import ProductTypesPage from "../pages/ProductTypes/ProductTypes"
+import FinanceReportsPage from "../pages/Reports/FinanceReports"
+import InventoryReportsPage from "../pages/Reports/InventoryReports"
 
 function AppRoutes() {
   const navigate = useNavigate()
@@ -151,6 +153,28 @@ function AppRoutes() {
         element={
           isAuthenticated ? (
             <SettingsPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/finance-reports"
+        element={
+          isAuthenticated ? (
+            <FinanceReportsPage/>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/inventory-reports"
+        element={
+          isAuthenticated ? (
+            <InventoryReportsPage/>
           ) : (
             <Navigate to="/login" replace />
           )

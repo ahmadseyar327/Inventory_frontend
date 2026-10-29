@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, type ReactNode } from "react"
-import { Link, Navigate, useLocation, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import appLogo from "../../assets/logo.png"
 import ThemeToggle from "../ThemeToggle/ThemeToggle"
 
@@ -120,13 +120,16 @@ export const erpSections: NavSection[] = [
     items: [
       {
         label: "Reports",
-        href: "/reports",
         icon: (
           <>
             <path d="M3 3v18h18" />
             <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
           </>
         ),
+        children: [
+          { label: "Finance Reports", href: "/finance-reports" },
+          { label: "Inventory Reports", href: "/inventory-reports" },
+        ],
       },
       {
         label: "Settings",
@@ -190,6 +193,7 @@ export default function Sidebar({
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [openParents, setOpenParents] = useState<string[]>([])
   const sidebarRef = useRef<HTMLElement>(null)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const { pathname: currentPath } = useLocation()
@@ -204,6 +208,18 @@ export default function Sidebar({
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  useEffect(() => {
+    sections.forEach((section) => {
+      section.items.forEach((item) => {
+        if (item.children?.some((child) => isActive(child.href))) {
+          setOpenParents((current) =>
+            current.includes(item.label) ? current : [...current, item.label]
+          )
+        }
+      })
+    })
+  }, [currentPath, sections])
 
   useEffect(() => {
     if (!isProfileMenuOpen) return
@@ -237,6 +253,14 @@ export default function Sidebar({
   function isParentActive(item: NavItem) {
     if (item.href && isActive(item.href)) return true
     return item.children?.some((child) => isActive(child.href)) || false
+  }
+
+  function toggleParent(label: string) {
+    setOpenParents((current) =>
+      current.includes(label)
+        ? current.filter((openLabel) => openLabel !== label)
+        : [...current, label]
+    )
   }
 
   const SidebarContent = (
@@ -289,6 +313,7 @@ export default function Sidebar({
               {section.items.map((item) => {
                 const hasChildren = !!item.children && item.children.length > 0
                 const parentActive = isParentActive(item)
+                const parentOpen = openParents.includes(item.label)
                 const isHovered = hoveredItem === item.label
 
                 return (
@@ -300,7 +325,10 @@ export default function Sidebar({
                       <Link
                         to={hasChildren ? currentPath : item.href ?? currentPath}
                         onClick={(event) => {
-                          if (hasChildren) event.preventDefault()
+                          if (hasChildren) {
+                            event.preventDefault()
+                            toggleParent(item.label)
+                          }
                           setIsMobileOpen(false)
                         }}
                         className={`
@@ -335,14 +363,14 @@ export default function Sidebar({
                         </span>
 
                         {hasChildren && isExpanded && (
-                          <Icon className="ml-auto h-4 w-4 text-slate-400">
+                          <Icon className={`ml-auto h-4 w-4 text-slate-400 transition-transform duration-200 ${parentOpen ? "rotate-90" : ""}`}>
                             <path d="m9 18 6-6-6-6" />
                           </Icon>
                         )}
                       </Link>
 
                       {/* Expanded Submenu (Inline Dropdown) */}
-                      {hasChildren && isExpanded && parentActive && (
+                      {hasChildren && isExpanded && parentOpen && (
                         <ul className="mt-1 ml-4 space-y-1 border-l border-slate-200 pl-3">
                           {item.children!.map((child) => (
                             <li key={child.href}>
